@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from openrouter import OpenRouter
-import datetime, os
+import datetime, os, random
 
 load_dotenv()
 
@@ -13,6 +13,14 @@ client = OpenRouter(
     server_url="https://ai.hackclub.com/proxy/v1",
 )
 
+cycles = [
+    "something an astronaut would use while on a mission",
+    "something that would help civilization survive on the moon",
+    "something that would help scientists study space better",
+]
+
+weeks_theme = random.choice(cycles)
+
 @app.command("/nebuladev")
 def callapi(ack, say):
     ack()
@@ -20,7 +28,12 @@ def callapi(ack, say):
     response = client.chat.send(
     model="qwen/qwen3-32b",
     messages=[
-        {"role": "user", "content": "Tell me a space themed joke."}
+        {"role": "user", "content": 
+         "You are a slack bot designed to generate one short (1-2 sentacnes) and creative project idea for a event called Nebula."
+         "Every week is a new cycle, that means you generate a new project theme. That will be sent bellow!"
+         "Please be very carful with formatting, make sure you use Slack Markdown and avoid using an exess of emojis!"
+         "This weeks theme is: " + weeks_theme
+         }
     ],
     stream=False,
 )
