@@ -19,7 +19,8 @@ cycles = [
     "something that would help scientists study space better",
 ]
 
-anchor = date(2026, 4, 1)  # change to your cycle start
+anchor = date(2026, 4, 15)
+end_date = date(2026, 4, 30)
 days = (date.today() - anchor).days
 cycle_index = (days // 5) % len(cycles)
 weeks_theme = cycles[cycle_index]
@@ -30,6 +31,11 @@ def command(ack, say, respond, command):
     print("We got a command!")
 
     user_text = (command.get("text") or "").strip().lower()
+
+    today = date.today()
+    if today < anchor or today > end_date:
+        respond(f"This command is only available from {anchor.isoformat()} to {end_date.isoformat()}.")
+        return
 
     if user_text == "idea":
         print("Idea being generated!")
