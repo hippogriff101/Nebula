@@ -48,19 +48,23 @@ def command(ack, say, respond, command):
         else:
             print("Idea being generated!")
             respond("Hey stargazer, I got your Project idea Request. Just cooking it up, it'll be with you soon!")
-            response = client.chat.send(
-            model="qwen/qwen3-32b",
-            messages=[
-                {"role": "user", "content": 
-                "You are a slack bot designed to generate one short (1-2 sentances) and creative project idea for a event called challenger-space-centre."
-                "Please be very carful with formatting, make sure you do not Markdown and avoid using an exess of emojis!"
-                "This weeks theme is: " + weeks_theme
-                }
-            ],
-            stream=False,
-        )
-            say(f"Yo, <@{user_id}>, here is your idea: " + response.choices[0].message.content)
-            print("Sent to channel!")
+            try:
+                response = client.chat.send(
+                model="qwen/qwen3-32b",
+                messages=[
+                    {"role": "user", "content": 
+                    "You are a slack bot designed to generate one short (1-2 sentances) and creative project idea for a event called challenger-space-centre."
+                    "Please be very carful with formatting, make sure you do not Markdown and avoid using an exess of emojis!"
+                    "This weeks theme is: " + weeks_theme
+                    }
+                ],
+                stream=False,
+                )
+                say(f"Yo, <@{user_id}>, here is your idea: " + response.choices[0].message.content)
+            except Exception as e:
+                respond("Sorry, couldn't generate an idea right now — try again in a bit!")
+                print(f"OpenRouter error: {e}")
+                print("Sent to channel!")
             return
       
     if user_text == "theme":
@@ -74,13 +78,13 @@ def command(ack, say, respond, command):
             return
 
     if user_text == "help":
-        respond("*Yo, here's what I can do!*: "
-        + "- `/nebula idea` will generate a project idea following this cycles theme"
-        + "- `/nebula theme` will tell you what the current cycles theme is"
-        + "- `/nebula help` this command your using rn!"
+        respond("*Yo, here's what I can do!*: \n"
+        + "- `/nebula idea` will generate a project idea following this cycles theme\n"
+        + "- `/nebula theme` will tell you what the current cycles theme is\n"
+        + "- `/nebula help` this command your using rn!\n\n"
         + "'But what actually is this' -  you may ask! Nebula is a space themed draft YSWS's whos org team is helping with the "
         + f"{channel_mention(FLAVORTOWN_CHANNEL_ID, 'flavortown')} sidequest "
-        + f"{channel_mention(CHALLENGER_CHANNEL_ID, 'challenger-space-centre')}!"
+        + f"{channel_mention(CHALLENGER_CHANNEL_ID, 'challenger-space-centre')}!\n"
         + "Starting on 15th April every five days there is a new cycle! Each cycle has a theme for your project!")
         respond(
             "Any more questions? Ask in "
@@ -102,7 +106,8 @@ def admin(ack, respond, command):
     if user_id == "U078VN0UU2K":
         respond("Hey Freddie!")
     else:
-        respond("This is a dev command for testng - go look at these space pi")
+        respond("This is a dev command for testng - go look at these space videos from Artemis II mission: https://www.youtube.com/watch?v=xvFZjo5PgG0")
+
 if __name__ == "__main__":
     SocketModeHandler(
         app,
