@@ -1,3 +1,4 @@
 .env
 testing.py
 admin.txt
+.env.prod
