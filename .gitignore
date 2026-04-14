@@ -2,3 +2,4 @@
 testing.py
 admin.txt
 .env.prod
+__pycache__/

@@ -15,7 +15,7 @@ FLAVORTOWN_CHANNEL_ID = os.getenv("FLAVORTOWN_CHANNEL_ID")
 def channel_mention(channel_id, fallback_name):
     return f"<#{channel_id}>" if channel_id else f"#{fallback_name}"
 
-client = OpenRouter(
+ai_client = OpenRouter(
     api_key=(os.getenv("HCAI-API_KEY")),
     server_url="https://ai.hackclub.com/proxy/v1",
 )
@@ -37,7 +37,7 @@ def handle_other_messages():
     pass
 
 @app.command("/nebula")
-def command(ack, say, respond, command, message, client):
+def command(ack, say, respond, command, client):
     ack()
     print("We got a command!")
     channel_id = command.get("channel_id")
@@ -56,7 +56,7 @@ def command(ack, say, respond, command, message, client):
                 print("Idea being generated!")
                 respond("Hey stargazer, I got your Project idea Request. Just cooking it up, it'll be with you soon!")
                 try:
-                    response = client.chat.send(
+                    response = ai_client.chat.send(
                     model="qwen/qwen3-32b",
                     messages=[
                         {"role": "user", "content": 
@@ -68,10 +68,8 @@ def command(ack, say, respond, command, message, client):
                     stream=False,
                     )
                     say(f"Yo, <@{user_id}>, here is your idea: " + response.choices[0].message.content)
-                    thread_ts = message.get("thread_ts", message["ts"])
                     say(
-                        text="You can ask for a idea by running `/nebula idea`!",
-                        thread_ts=thread_ts
+                        text="You can ask for a idea by running `/nebula idea`!"
                     )
                 except Exception as e:
                     respond("Sorry, couldn't generate an idea right now — try again in a bit!")
